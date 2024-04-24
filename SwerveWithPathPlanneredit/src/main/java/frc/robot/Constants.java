@@ -44,6 +44,10 @@ public final class Constants {
   public static final int afterIndexPushDelay = 750;
   public static final int shooterRPMLim = 5000;
 
+
+  //arm vars
+  public static final double armSlope = 0.063;
+
   public static class OperatorConstants {
     //public static final int kDriverControllerPort = 0;
   }

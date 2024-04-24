@@ -88,37 +88,37 @@ public class TunerConstants {
 
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 11;
-    private static final int kFrontLeftSteerMotorId = 21;
-    private static final int kFrontLeftEncoderId = 1;
-    private static final double kFrontLeftEncoderOffset = -0.49560546875;
+    private static final int kBackRightDriveMotorId = 11;
+    private static final int kBackRightSteerMotorId = 21;
+    private static final int kBackRightEncoderId = 1;
+    private static final double kBackRightEncoderOffset = -0.49560546875;
 
     private static final double kFrontLeftXPosInches = 9.325;
     private static final double kFrontLeftYPosInches = 9.325;
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = 12;
-    private static final int kFrontRightSteerMotorId = 22;
-    private static final int kFrontRightEncoderId = 2;
-    private static final double kFrontRightEncoderOffset = 0.205322265625;
+    private static final int kBackLeftDriveMotorId = 12;
+    private static final int kBackLeftSteerMotorId = 22;
+    private static final int kBackLeftEncoderId = 2;
+    private static final double kBackLeftEncoderOffset = 0.205322265625;
 
     private static final double kFrontRightXPosInches = 9.325;
     private static final double kFrontRightYPosInches = -9.325;
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = 14;
-    private static final int kBackLeftSteerMotorId = 24;
-    private static final int kBackLeftEncoderId = 4;
-    private static final double kBackLeftEncoderOffset = 0.193115234375;
+    private static final int kFrontRightDriveMotorId = 14;
+    private static final int kFrontRightSteerMotorId = 24;
+    private static final int kFrontRightEncoderId = 4;
+    private static final double kFrontRightEncoderOffset = 0.193115234375;
 
     private static final double kBackLeftXPosInches = -9.325;
     private static final double kBackLeftYPosInches = 9.325;
 
     // Back Right
-    private static final int kBackRightDriveMotorId = 13;
-    private static final int kBackRightSteerMotorId = 23;
-    private static final int kBackRightEncoderId = 3;
-    private static final double kBackRightEncoderOffset = -0.14013671875;
+    private static final int kFrontLeftDriveMotorId = 13;
+    private static final int kFrontLeftSteerMotorId = 23;
+    private static final int kFrontLeftEncoderId = 3;
+    private static final double kFrontLeftEncoderOffset = -0.14013671875;
 
     private static final double kBackRightXPosInches = -9.325;
     private static final double kBackRightYPosInches = -9.325;

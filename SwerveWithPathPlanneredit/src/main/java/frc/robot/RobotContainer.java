@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
@@ -24,11 +26,15 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 //mine:
 import frc.robot.Constants;
+import frc.robot.commands.AddDegree;
+import frc.robot.commands.AmpShotArm;
 import frc.robot.commands.IntakeCmd;
 import frc.robot.commands.NoteRstCmd;
 import frc.robot.commands.ReleaseCmd;
 import frc.robot.commands.ShootCmd;
 import frc.robot.commands.ShooterSpoolCmd;
+import frc.robot.commands.ZeroArmPos;
+import frc.robot.commands.RemoveDegree;
 
 
 
@@ -39,6 +45,8 @@ public class RobotContainer {
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
+  private final Arm m_arm = new Arm();
+  
 
 
 
@@ -77,10 +85,15 @@ public class RobotContainer {
 
     //Ben's Commands
     joystick.rightBumper().toggleOnTrue(new IntakeCmd(m_intake, m_indexer, m_shooter)); //on right bumper button run intake
-    joystick.x().toggleOnTrue(new ShootCmd(m_shooter, m_indexer)); //on right trigger button shoot auto
+    joystick.x().toggleOnTrue(new ShootCmd(m_shooter, m_indexer, m_arm)); //on right trigger button shoot auto
     joystick.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
     joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
     joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
+    //joystick.pov(270).onTrue(new RemoveDegree(m_arm));
+    //joystick.pov(90).onTrue(new AddDegree(m_arm));
+    joystick.pov(90).onTrue(new AmpShotArm(m_arm));
+    joystick.pov(270).onTrue(new ZeroArmPos(m_arm));
+
      
 
 
@@ -107,8 +120,8 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-    joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+    joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+    joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
 
     /* Bindings for drivetrain characterization */
@@ -123,13 +136,16 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     NamedCommands.registerCommand("Intake", new IntakeCmd(m_intake, m_indexer, m_shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCmd(m_shooter, m_indexer));
+    NamedCommands.registerCommand("Shoot", new ShootCmd(m_shooter, m_indexer, m_arm));
     NamedCommands.registerCommand("wait", new WaitCommand(0.7));
   }
 
   public Command getAutonomousCommand() {
     /* First put the drivetrain into auto run mode, then run the auto */
     //return runAuto;
-    return new PathPlannerAuto("Tests");
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+
+    
+    return new PathPlannerAuto("New Auto");
   }
 }

@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Arm;
 //import java.util.timer;
 
 import com.ctre.phoenix.time.StopWatch;
@@ -19,6 +20,7 @@ public class ShootCmd extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Shooter m_shooter;
   private final Indexer m_indexer;
+  private final Arm m_arm;
 
   private boolean x;
   private boolean y;
@@ -31,10 +33,11 @@ public class ShootCmd extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootCmd(Shooter m_shooter, Indexer m_indexer) {
+  public ShootCmd(Shooter m_shooter, Indexer m_indexer, Arm m_arm) {
     //m_subsystem = subsystem;
     this.m_shooter = m_shooter;
     this.m_indexer = m_indexer;
+    this.m_arm = m_arm;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
     addRequirements(m_indexer);
@@ -43,7 +46,13 @@ public class ShootCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.runShooter(Constants.shooterSpeed);
+    if(m_arm.getArmPos() > 50){
+      m_shooter.runShooter(0.2);
+    }
+    else{
+      m_shooter.runShooter(Constants.shooterSpeed);
+    }
+    //m_shooter.runShooter(Constants.shooterSpeed);
     m_indexer.startIndex2Timer();
     
 
@@ -57,7 +66,14 @@ public class ShootCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.runShooter(Constants.shooterSpeed);
+
+    //m_shooter.runShooter(Constants.shooterSpeed);
+    if(m_arm.getArmPos() > 50){
+      m_shooter.runShooter(0.2);
+    }
+    else{
+      m_shooter.runShooter(Constants.shooterSpeed);
+    }
     if(m_indexer.getIndexTimer() > 700){
       m_indexer.setIndexer(Constants.indexerPush);
       //m_indexer.startIndex2Timer();

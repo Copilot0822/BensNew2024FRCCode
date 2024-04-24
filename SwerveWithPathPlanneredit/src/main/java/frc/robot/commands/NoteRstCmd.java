@@ -39,6 +39,7 @@ public class NoteRstCmd extends Command {
     m_intake.setIntake(0);
     m_indexer.startIndexTimer();
     m_indexer.setIndexer(-Constants.indexBackOutSpeed);
+    m_intake.setIntake(-Constants.indexBackOutSpeed);
 
     x= false;
   }
@@ -50,6 +51,7 @@ public class NoteRstCmd extends Command {
     if(m_indexer.getIndexTimer() >= Constants.indexBackOutTime){
       x = true;
       m_indexer.setIndexer(0);
+      m_intake.setIntake(0);
     }
 
 
