@@ -146,6 +146,6 @@ public class RobotContainer {
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
 
     
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("Auto Center");
   }
 }

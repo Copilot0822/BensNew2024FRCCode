@@ -29,7 +29,7 @@ public final class Constants {
   public static final boolean shooterBottomInvert = true;
   
   //Intake Command vars
-  public static final double intakeSpeedIn = 0.7;
+  public static final double intakeSpeedIn = 0.8;
   public static final double indexSpeedIn = 0.5;
   public static final double indexCurrentThreshould = 10;
   public static final int indexCurrentDelay = 400;
