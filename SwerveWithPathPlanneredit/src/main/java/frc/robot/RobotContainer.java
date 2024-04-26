@@ -87,12 +87,12 @@ public class RobotContainer {
     joystick.rightBumper().toggleOnTrue(new IntakeCmd(m_intake, m_indexer, m_shooter)); //on right bumper button run intake
     joystick.x().toggleOnTrue(new ShootCmd(m_shooter, m_indexer, m_arm)); //on right trigger button shoot auto
     joystick.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
-    joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
-    joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
-    //joystick.pov(270).onTrue(new RemoveDegree(m_arm));
-    //joystick.pov(90).onTrue(new AddDegree(m_arm));
-    joystick.pov(90).onTrue(new AmpShotArm(m_arm));
-    joystick.pov(270).onTrue(new ZeroArmPos(m_arm));
+    //joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
+    //joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
+    joystick.pov(270).onTrue(new RemoveDegree(m_arm));
+    joystick.pov(90).onTrue(new AddDegree(m_arm));
+    joystick.pov(0).onTrue(new AmpShotArm(m_arm));
+    joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
 
      
 
@@ -105,9 +105,9 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*0.25) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*0.25) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
@@ -120,17 +120,17 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-    joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+    //joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+    //joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
 
     /* Bindings for drivetrain characterization */
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
     /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    //joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    //joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
   }
 
   public RobotContainer() {
