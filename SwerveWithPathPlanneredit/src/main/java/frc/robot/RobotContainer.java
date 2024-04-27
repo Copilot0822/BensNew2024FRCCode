@@ -19,15 +19,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.BackPhotonVision;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.BackPhotonVision;
 //mine:
 import frc.robot.Constants;
 import frc.robot.commands.AddDegree;
 import frc.robot.commands.AmpShotArm;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeCmd;
 import frc.robot.commands.NoteRstCmd;
 import frc.robot.commands.ReleaseCmd;
@@ -46,6 +49,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
+  private final BackPhotonVision m_backPhotonVision = new BackPhotonVision();
   
 
 
@@ -55,7 +59,7 @@ public class RobotContainer {
 
 
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private double  MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
@@ -90,9 +94,10 @@ public class RobotContainer {
     //joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
     //joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
     joystick.pov(270).onTrue(new RemoveDegree(m_arm));
-    joystick.pov(90).onTrue(new AddDegree(m_arm));
+    //joystick.pov(90).onTrue(new AddDegree(m_arm));
     joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
+    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain));
 
      
 
@@ -105,9 +110,9 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*0.25) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*1) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*0.25) // Drive left with negative X (left)
+            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*1) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
