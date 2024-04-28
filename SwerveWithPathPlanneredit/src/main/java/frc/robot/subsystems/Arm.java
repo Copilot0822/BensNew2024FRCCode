@@ -149,6 +149,9 @@ public class Arm extends SubsystemBase {
   public double getArmVelocity(){
     return leftEncoder.getVelocity();
   }
+  public double getArmSetPos(){
+    return setPosition;
+  }
 
   
 

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.LeftLimelight;
+import frc.robot.subsystems.PigeonAutoAim;
 //import frc.robot.subsystems.LeftPhotonVision;
 import frc.robot.subsystems.RightLimelight;
 import frc.robot.Constants;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Shooter;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -39,14 +41,14 @@ public class AutoAim extends Command {
   private double equation;
   private final LeftLimelight m_leftLimelight;
   private final RightLimelight m_rightlimelight;
-
+  private final PigeonAutoAim m_pigeonAutoAim;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain, Shooter m_shooter, Indexer m_indexer, LeftLimelight m_leftLimelight, RightLimelight m_rightLimelight) {
+  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain, Shooter m_shooter, Indexer m_indexer, LeftLimelight m_leftLimelight, RightLimelight m_rightLimelight, PigeonAutoAim m_pigeonAutoAim) {
     //m_subsystem = subsystem;
     this.m_arm = m_arm;
     this.m_photon = m_photon;
@@ -54,6 +56,7 @@ public class AutoAim extends Command {
     this.m_indexer = m_indexer;
     this.m_leftLimelight = m_leftLimelight;
     this.m_rightlimelight = m_rightLimelight;
+    this.m_pigeonAutoAim = m_pigeonAutoAim;
     //this.m_lPhoton = m_lPhoton;
     //this.drivetrain = drivetrain;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -64,6 +67,7 @@ public class AutoAim extends Command {
     addRequirements(m_shooter);
     addRequirements(m_indexer);
     addRequirements(m_leftLimelight);
+    addRequirements(m_pigeonAutoAim);
 
     //final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -94,10 +98,12 @@ public class AutoAim extends Command {
     }
     else if(m_leftLimelight.getLeftBool() && m_photon.getX() == -1){
       mode = 2;
+      m_pigeonAutoAim.leftSpinSet();
 
     }
     else if(m_rightlimelight.getRightBool() && m_photon.getX() == -1){
       mode = 3;
+      m_pigeonAutoAim.rightSpinSet();
     }
     else{
       e = true;
@@ -131,16 +137,17 @@ public class AutoAim extends Command {
     }*/
 
     if(mode == 2){
-      drivetrain.setControl(drive.withRotationalRate(1.25));
-      if(m_photon.getX() != -1){
+      drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*3));
+      if(m_photon.getX() != -1 || Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
         mode = 1;
 
       }
 
     }
     else if(mode == 3){
-      drivetrain.setControl(drive.withRotationalRate(-1.25));
-      if(m_photon.getX() != -1){
+      drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*3));
+      if(m_photon.getX() != -1|| Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
+        drivetrain.setControl(drive.withRotationalRate(0));
         mode = 1;
       }
     }
@@ -166,7 +173,7 @@ public class AutoAim extends Command {
       }
       
     }
-    if(m_shooter.getShooterRPM()> 5000 && m_arm.getArmVelocity() < 0.01 && m_arm.getArmPos() > equation - 0.5 && equation != -1){
+    if(m_shooter.getShooterRPM()> 5000 && m_arm.getArmVelocity() < 0.01 && m_arm.getArmPos() > equation - 0.5 && equation != -1 && m_arm.getArmSetPos() != 20 && m_arm.getArmPos() < m_arm.getArmSetPos()){
       m_indexer.setIndexer(Constants.indexerPush);
       //m_indexer.startIndexTimer();
     }

@@ -6,16 +6,19 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LeftLimelight extends SubsystemBase {
+public class PigeonAutoAim extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   //private final TalonSRX intakeSrx = new TalonSRX(30);
-  private boolean leftBool;
+  private final Pigeon2 thePigeon2 = new Pigeon2(60);
+  private double desiredAngle;
+  
   
 
   
@@ -27,7 +30,7 @@ public class LeftLimelight extends SubsystemBase {
 
 
 
-  public LeftLimelight() {}
+  public PigeonAutoAim() {}
 
   /**
    * Example command factory method.
@@ -55,29 +58,22 @@ public class LeftLimelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    long a = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("tv").getInteger(0);
-    //double[] c = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
-    //SmartDashboard.putNumber("yaw", c[5]);
-    
-    if(a == 1){
-      double b = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("tid").getDouble(0);
-      if(b == 7 || b == 8 || b == 4 || b == 3){
-        leftBool = true;
-
-      }
-      else{
-        leftBool = false;
-      }
-    }
-    else{
-      leftBool = false;
-    }
-    SmartDashboard.putBoolean("LeftLime Bool", leftBool);
+    SmartDashboard.putNumber("Rotation", thePigeon2.getAngle());
     // This method will be called once per scheduler run
   }
-  public boolean getLeftBool(){
-    return leftBool;
+  public void leftSpinSet(){
+    desiredAngle = thePigeon2.getAngle()-90;
+
   }
+  public double error(){
+    return Units.degreesToRadians(thePigeon2.getAngle() - desiredAngle);
+  }
+  public void rightSpinSet(){
+    desiredAngle = thePigeon2.getAngle()+90;
+  }
+  /*public double errorRight(){
+    return Units.degreesToRadians(thePigeon2.getAngle() - desiredAngle);
+  }*/
 
   
 
