@@ -55,12 +55,12 @@ public class LeftLimelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    long a = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("tv").getInteger(0);
+    long a = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getInteger(0);
     //double[] c = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
     //SmartDashboard.putNumber("yaw", c[5]);
     
     if(a == 1){
-      double b = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("tid").getDouble(0);
+      double b = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(0);
       if(b == 7 || b == 8 || b == 4 || b == 3){
         leftBool = true;
 
