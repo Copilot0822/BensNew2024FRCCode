@@ -5,9 +5,12 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Indexer;
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BackPhotonVision;
+import frc.robot.subsystems.Shooter;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -22,8 +25,11 @@ public class AutoAim extends Command {
   //private final ExampleSubsystem m_subsystem;
   private final Arm m_arm;
   private final BackPhotonVision m_photon;
+  private final Shooter m_shooter;
+  private final Indexer m_indexer;
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
   private boolean d = false;
+  private boolean e = false;
 
 
   /**
@@ -31,16 +37,20 @@ public class AutoAim extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain) {
+  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain, Shooter m_shooter, Indexer m_indexer) {
     //m_subsystem = subsystem;
     this.m_arm = m_arm;
     this.m_photon = m_photon;
+    this.m_shooter = m_shooter;
+    this.m_indexer = m_indexer;
     //this.drivetrain = drivetrain;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(subsystem);
     addRequirements(m_arm);
     addRequirements(m_photon);
     addRequirements(drivetrain);
+    addRequirements(m_shooter);
+    addRequirements(m_shooter);
 
     //final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -54,6 +64,16 @@ public class AutoAim extends Command {
   public void initialize() {
     m_photon.startStopWatch();
     d = false;
+    //e = false;
+    m_shooter.runShooter(Constants.shooterSpeed);
+    //e = !m_photon.hasTargets();
+    if(m_photon.getX() == -1 || m_photon.getX() < 1.4){
+      e = true;
+
+    }
+    else{
+      e = false;
+    }
     final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
@@ -109,6 +129,13 @@ public class AutoAim extends Command {
       }
       
     }
+    if(m_photon.getStopWatch() > 800){
+      m_indexer.setIndexer(Constants.indexerPush);
+    }
+    if(m_photon.getStopWatch() > 1400){
+      e = true;
+
+    }
 
     
     
@@ -120,6 +147,8 @@ public class AutoAim extends Command {
   @Override
   public void end(boolean interrupted) {
     m_arm.setNewPosition(0);
+    m_indexer.setIndexer(0);
+    m_shooter.runShooter(0);
     d = false; 
   }
 
@@ -127,6 +156,7 @@ public class AutoAim extends Command {
   @Override
   public boolean isFinished() {
     //return !m_photon.hasTargets();
-    return false;
+    //return false;
+    return e;
   }
 }

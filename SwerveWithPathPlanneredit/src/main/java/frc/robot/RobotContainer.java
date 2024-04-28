@@ -97,7 +97,7 @@ public class RobotContainer {
     joystick.pov(0).onTrue(new AddDegree(m_arm));
     //joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
-    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain));
+    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer));
 
      
 
