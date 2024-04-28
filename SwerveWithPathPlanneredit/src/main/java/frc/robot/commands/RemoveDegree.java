@@ -32,7 +32,7 @@ public class RemoveDegree extends Command {
   @Override
   public void initialize() {
     x = false;
-    m_arm.removeDegree(5);
+    m_arm.removeDegree(1);
     x=true;
 
   }

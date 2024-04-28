@@ -127,8 +127,8 @@ public class Arm extends SubsystemBase {
     if(leftEncoder.getPosition() > setPosition){
       error = setPosition - leftEncoder.getPosition();
       output = error*0.03125;
-      if(output < -0.3){
-        leftSparkMax.set(-0.3);
+      if(output < -0.2){
+        leftSparkMax.set(-0.2);
       }
       else{
         leftSparkMax.set(output);

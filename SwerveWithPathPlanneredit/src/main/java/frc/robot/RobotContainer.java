@@ -70,7 +70,7 @@ public class RobotContainer {
   // deprecated as of 4-20  //private final GenericHID drivController = new GenericHID(0); // BENS CONTROLLER
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * (0.1)*0.25).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -93,9 +93,9 @@ public class RobotContainer {
     joystick.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
     //joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
     //joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
-    joystick.pov(270).onTrue(new RemoveDegree(m_arm));
-    //joystick.pov(90).onTrue(new AddDegree(m_arm));
-    joystick.pov(0).onTrue(new AmpShotArm(m_arm));
+    //joystick.pov(180).onTrue(new RemoveDegree(m_arm));
+    joystick.pov(0).onTrue(new AddDegree(m_arm));
+    //joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
     joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain));
 
@@ -110,13 +110,13 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*1) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*0.25) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*1) // Drive left with negative X (left)
+            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*0.25) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
-    joystick.leftStick().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.leftStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 

@@ -74,7 +74,7 @@ public class ShootCmd extends Command {
     else{
       m_shooter.runShooter(Constants.shooterSpeed);
     }
-    if(m_indexer.getIndexTimer() > 700){
+    if(m_indexer.getIndexTimer() > 1000){
       m_indexer.setIndexer(Constants.indexerPush);
       //m_indexer.startIndex2Timer();
       y = true;

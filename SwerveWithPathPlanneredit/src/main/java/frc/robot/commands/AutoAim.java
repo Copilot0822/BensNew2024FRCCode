@@ -12,6 +12,7 @@ import frc.robot.subsystems.BackPhotonVision;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -22,6 +23,7 @@ public class AutoAim extends Command {
   private final Arm m_arm;
   private final BackPhotonVision m_photon;
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  private boolean d = false;
 
 
   /**
@@ -50,10 +52,13 @@ public class AutoAim extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_photon.startStopWatch();
+    d = false;
     final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
+
 
   }
 
@@ -66,8 +71,46 @@ public class AutoAim extends Command {
                                                                // driving in open loop
     double x = m_photon.getX();
     double y = m_photon.getY();
-    //final SwerveRequest.RobotCentric drive = new SwerveRequest(). 
+    //final SwerveRequest.RobotCentric drive = new SwerveRequest().
+    /*if(y*2 > 2){
+      drivetrain.setControl(drive.withRotationalRate(2));
+    } 
+    else if(y*2 < -2){
+      drivetrain.setControl(drive.withRotationalRate(-2));
+    }
+    else{
+      drivetrain.setControl(drive.withRotationalRate(y*2));
+    }*/
     drivetrain.setControl(drive.withRotationalRate(y*3));
+    
+    
+    /*double equation = (15.8*x + -23.9);
+    SmartDashboard.putNumber("Auto Equation", equation);
+    if(equation >= 20){
+      m_arm.setNewPosition(20);
+    }
+    else if(equation <= 0){
+      //m_arm.setNewPosition(0);
+    }
+    else{
+      m_arm.setNewPosition(equation);
+    }*/
+    if(m_photon.getStopWatch() > 500 && !d){
+      double equation = (15.8*x + -23.9);
+      if(equation >= 20){
+        m_arm.setNewPosition(20);
+      }
+      else if(equation <= 0){
+        //m_arm.setNewPosition(0);
+      }
+      else{
+        m_arm.setNewPosition(equation);
+        d = true;
+      }
+      
+    }
+
+    
     
     
 
@@ -75,7 +118,10 @@ public class AutoAim extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_arm.setNewPosition(0);
+    d = false; 
+  }
 
   // Returns true when the command should end.
   @Override

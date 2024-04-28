@@ -38,7 +38,7 @@ public final class Constants {
   public static final int indexBackOutTime = 100;
 
   //Shoot Command vars
-  public static final double shooterSpeed = 0.5;
+  public static final double shooterSpeed = 1;
   public static final double shooterVariance = 50; //rpm variance
   public static final double indexerPush = 0.8;
   public static final int afterIndexPushDelay = 750;
