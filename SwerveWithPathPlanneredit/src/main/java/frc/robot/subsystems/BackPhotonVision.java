@@ -29,6 +29,7 @@ public class BackPhotonVision extends SubsystemBase {
   private double y;
   private double a;
   public final StopWatch photonStopWatch = new StopWatch();
+  public final StopWatch pStopWatch = new StopWatch();
   
   
 
@@ -70,6 +71,7 @@ public class BackPhotonVision extends SubsystemBase {
   @Override
   public void periodic() {
     var newResult = backPhotonCamera.getLatestResult();
+    SmartDashboard.putNumber("ShootTimer", pStopWatch.getDurationMs());
     
     
     
@@ -141,7 +143,8 @@ public class BackPhotonVision extends SubsystemBase {
     SmartDashboard.putNumber("Side Dist to tag", y);
     SmartDashboard.putNumber("Tag Id", a);
 
-    double equation = (15.8*x + -23.9);
+    //double equation = (15.8*x + -23.9);
+    double equation = (213 + -360*x + 196*x*x + -33.5*x*x*x);
     SmartDashboard.putNumber("Auto Equation", equation);
     
 
@@ -165,10 +168,10 @@ public class BackPhotonVision extends SubsystemBase {
     return result.hasTargets();
   }
   public void startStopWatch(){
-    photonStopWatch.start();
+    pStopWatch.start();
   }
   public int getStopWatch(){
-    return photonStopWatch.getDurationMs();
+    return pStopWatch.getDurationMs();
   }
   //double equation = (15.8*x + -23.9);
   //SmartDashboard.putNumcber("Auto Equation", equation);

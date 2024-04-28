@@ -24,6 +24,9 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LeftLimelight;
+//import frc.robot.subsystems.LeftPhotonVision;
+import frc.robot.subsystems.RightLimelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.BackPhotonVision;
 //mine:
@@ -50,6 +53,9 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final BackPhotonVision m_backPhotonVision = new BackPhotonVision();
+  //private final LeftPhotonVision m_leftPhotonVision = new LeftPhotonVision();
+  private final RightLimelight m_rLimelight = new RightLimelight();
+  private final LeftLimelight m_lLimelight = new LeftLimelight();
   
 
 
@@ -97,7 +103,7 @@ public class RobotContainer {
     joystick.pov(0).onTrue(new AddDegree(m_arm));
     //joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
-    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer));
+    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight));
 
      
 

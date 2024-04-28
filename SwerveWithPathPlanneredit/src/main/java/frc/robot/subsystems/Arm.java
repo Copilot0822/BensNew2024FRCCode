@@ -48,6 +48,7 @@ public class Arm extends SubsystemBase {
     leftSparkMax.setInverted(false);
     rightSparkMax.follow(leftSparkMax, true);
     leftEncoder.setPositionConversionFactor(2.04081633);
+    leftEncoder.setVelocityConversionFactor(2.04081633);
     
 
 
@@ -144,6 +145,9 @@ public class Arm extends SubsystemBase {
   }
   public double getArmPos(){
     return leftEncoder.getPosition();
+  }
+  public double getArmVelocity(){
+    return leftEncoder.getVelocity();
   }
 
   

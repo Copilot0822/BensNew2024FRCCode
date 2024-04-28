@@ -6,6 +6,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.LeftLimelight;
+//import frc.robot.subsystems.LeftPhotonVision;
+import frc.robot.subsystems.RightLimelight;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
@@ -25,11 +28,17 @@ public class AutoAim extends Command {
   //private final ExampleSubsystem m_subsystem;
   private final Arm m_arm;
   private final BackPhotonVision m_photon;
+  //private final LeftPhotonVision m_lPhoton;
   private final Shooter m_shooter;
   private final Indexer m_indexer;
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
   private boolean d = false;
   private boolean e = false;
+  private int mode;
+  private boolean f = false;
+  private double equation;
+  private final LeftLimelight m_leftLimelight;
+  private final RightLimelight m_rightlimelight;
 
 
   /**
@@ -37,12 +46,15 @@ public class AutoAim extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain, Shooter m_shooter, Indexer m_indexer) {
+  public AutoAim(Arm m_arm, BackPhotonVision m_photon, CommandSwerveDrivetrain drivetrain, Shooter m_shooter, Indexer m_indexer, LeftLimelight m_leftLimelight, RightLimelight m_rightLimelight) {
     //m_subsystem = subsystem;
     this.m_arm = m_arm;
     this.m_photon = m_photon;
     this.m_shooter = m_shooter;
     this.m_indexer = m_indexer;
+    this.m_leftLimelight = m_leftLimelight;
+    this.m_rightlimelight = m_rightLimelight;
+    //this.m_lPhoton = m_lPhoton;
     //this.drivetrain = drivetrain;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(subsystem);
@@ -50,7 +62,8 @@ public class AutoAim extends Command {
     addRequirements(m_photon);
     addRequirements(drivetrain);
     addRequirements(m_shooter);
-    addRequirements(m_shooter);
+    addRequirements(m_indexer);
+    addRequirements(m_leftLimelight);
 
     //final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -62,17 +75,32 @@ public class AutoAim extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_photon.startStopWatch();
+    //m_photon.startStopWatch();
     d = false;
+    f = false;
+    equation = -1;
     //e = false;
     m_shooter.runShooter(Constants.shooterSpeed);
     //e = !m_photon.hasTargets();
-    if(m_photon.getX() == -1 || m_photon.getX() < 1.4){
-      e = true;
+    //if(m_photon.getX() == -1 || m_photon.getX() < 1.4 && m_lPhoton.getSpeakerBool() == false){
+      //e = true;
+
+    //}
+    //else{
+      e = false;
+    //}
+    if(m_photon.getX() != -1){
+      mode = 1;
+    }
+    else if(m_leftLimelight.getLeftBool() && m_photon.getX() == -1){
+      mode = 2;
 
     }
+    else if(m_rightlimelight.getRightBool() && m_photon.getX() == -1){
+      mode = 3;
+    }
     else{
-      e = false;
+      e = true;
     }
     final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -101,7 +129,55 @@ public class AutoAim extends Command {
     else{
       drivetrain.setControl(drive.withRotationalRate(y*2));
     }*/
-    drivetrain.setControl(drive.withRotationalRate(y*3));
+
+    if(mode == 2){
+      drivetrain.setControl(drive.withRotationalRate(1.25));
+      if(m_photon.getX() != -1){
+        mode = 1;
+
+      }
+
+    }
+    else if(mode == 3){
+      drivetrain.setControl(drive.withRotationalRate(-1.25));
+      if(m_photon.getX() != -1){
+        mode = 1;
+      }
+    }
+    else if(mode == 1){
+      drivetrain.setControl(drive.withRotationalRate(y*3));
+      if(f = false){
+        
+        f = true;
+        m_shooter.runShooter(Constants.shooterSpeed);
+      }
+      //double g = drivetrain.getCurrentRobotChassisSpeeds(drive.RotationalRate());
+      if(!d && y < 0.1 && y > -0.1){
+      equation = (213 + -360*x + 196*x*x + -33.5*x*x*x);
+      if(equation >= 20){
+        m_arm.setNewPosition(20);
+      }
+      else if(equation <= 0){
+        //m_arm.setNewPosition(0);
+      }
+      else{
+        m_arm.setNewPosition(equation);
+        d = true;
+      }
+      
+    }
+    if(m_shooter.getShooterRPM()> 5000 && m_arm.getArmVelocity() < 0.01 && m_arm.getArmPos() > equation - 0.5 && equation != -1){
+      m_indexer.setIndexer(Constants.indexerPush);
+      //m_indexer.startIndexTimer();
+    }
+    //if(m_indexer.getIndexTimer() > 500){
+      //e = true;
+
+    //}
+
+
+  }
+    //drivetrain.setControl(drive.withRotationalRate(y*3));
     
     
     /*double equation = (15.8*x + -23.9);
@@ -115,28 +191,7 @@ public class AutoAim extends Command {
     else{
       m_arm.setNewPosition(equation);
     }*/
-    if(m_photon.getStopWatch() > 500 && !d){
-      double equation = (15.8*x + -23.9);
-      if(equation >= 20){
-        m_arm.setNewPosition(20);
-      }
-      else if(equation <= 0){
-        //m_arm.setNewPosition(0);
-      }
-      else{
-        m_arm.setNewPosition(equation);
-        d = true;
-      }
-      
-    }
-    if(m_photon.getStopWatch() > 800){
-      m_indexer.setIndexer(Constants.indexerPush);
-    }
-    if(m_photon.getStopWatch() > 1400){
-      e = true;
-
-    }
-
+    
     
     
     
