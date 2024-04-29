@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LeftLimelight extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   //private final TalonSRX intakeSrx = new TalonSRX(30);
-  private boolean leftBool;
+  private boolean leftBool;// says if it has target 7,8,3,4
   
 
   
@@ -59,9 +59,9 @@ public class LeftLimelight extends SubsystemBase {
     //double[] c = NetworkTableInstance.getDefault().getTable("limelight-l").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
     //SmartDashboard.putNumber("yaw", c[5]);
     
-    if(a == 1){
-      double b = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(0);
-      if(b == 7 || b == 8 || b == 4 || b == 3){
+    if(a == 1){//if has targets??? I forget :)
+      double b = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(0);// gets the id of the best target
+      if(b == 7 || b == 8 || b == 4 || b == 3){// if id is a speaker then set bool to true else false
         leftBool = true;
 
       }
@@ -75,7 +75,7 @@ public class LeftLimelight extends SubsystemBase {
     SmartDashboard.putBoolean("LeftLime Bool", leftBool);
     // This method will be called once per scheduler run
   }
-  public boolean getLeftBool(){
+  public boolean getLeftBool(){//does it see important tags for speaker
     return leftBool;
   }
 

@@ -47,6 +47,10 @@ public final class Constants {
 
   //arm vars
   public static final double armSlope = 0.063;
+  public static final double downArmSlope = 0.03125;
+  public static final double maxUpAppliedPower = 0.4;
+  public static final double maxDownAppliedPower = -0.2;
+  
 
   public static class OperatorConstants {
     //public static final int kDriverControllerPort = 0;

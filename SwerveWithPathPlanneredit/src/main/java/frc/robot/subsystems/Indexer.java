@@ -17,7 +17,7 @@ public class Indexer extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   //private final TalonSRX intakeSrx = new TalonSRX(30);
   private final TalonSRX indexSrx = new TalonSRX(Constants.indexerId);
-  public final StopWatch indexStopWatch = new StopWatch();
+  public final StopWatch indexStopWatch = new StopWatch();// used for intake cmd
   public final StopWatch indexStopWatch2 = new StopWatch();
   public final StopWatch indexStopWatch3 = new StopWatch();
   

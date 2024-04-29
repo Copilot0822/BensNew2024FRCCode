@@ -75,14 +75,14 @@ public class BackPhotonVision extends SubsystemBase {
     
     
     
-    if(newResult.hasTargets()){
-      List<PhotonTrackedTarget> listOfTags = newResult.getTargets();
+    if(newResult.hasTargets()){ // enters searching if the camera has targets else returns a,x = -1 and y = 0
+      List<PhotonTrackedTarget> listOfTags = newResult.getTargets();//creates the list of Targets
 
       //if(DriverStation.getAlliance().get() == Alliance.Blue){
         //List<PhotonTrackedTarget> listOfTags = newResult.getTargets();
-        int length = listOfTags.size();
-        SmartDashboard.putNumber("Number of Tags", length);
-        for(int i = 0; i < length; i++){
+        int length = listOfTags.size();//gets the length of the List of tags
+        SmartDashboard.putNumber("Number of Tags", length); // puts number of tags to dashboard
+        for(int i = 0; i < length; i++){  // searches the list for ID 7 or 4 and returns the id as a and gets the x and y of the tag else returns a,x = -1 and y = 0
           Transform3d Target = listOfTags.get(i).getBestCameraToTarget();
           int b = listOfTags.get(i).getFiducialId();
           if(b == 7 || b == 4){
@@ -144,8 +144,8 @@ public class BackPhotonVision extends SubsystemBase {
     SmartDashboard.putNumber("Tag Id", a);
 
     //double equation = (15.8*x + -23.9);
-    double equation = (213 + -360*x + 196*x*x + -33.5*x*x*x);
-    SmartDashboard.putNumber("Auto Equation", equation);
+    double equation = (213 + -360*x + 196*x*x + -33.5*x*x*x); // the auto aim equation
+    SmartDashboard.putNumber("Auto Equation", equation); //writes it to dashboard
     
 
     // This method will be called once per scheduler run
@@ -153,16 +153,16 @@ public class BackPhotonVision extends SubsystemBase {
         
 
   }
-  public double getX(){
+  public double getX(){ // gets the x value of tag **remember that x == -1 when no tag and y == 0**
     
     return x;
   }
-  public double getY(){
+  public double getY(){//gets the y zalue of tag **remember that y == 0 when no tag**
     
     return y;
 
   }
-  public boolean hasTargets(){
+  public boolean hasTargets(){ //gets if there is targets; could also use x == -1 for this as that factors out tags that are not 4 or 7
     var result = backPhotonCamera.getLatestResult();
     
     return result.hasTargets();

@@ -61,14 +61,14 @@ public class PigeonAutoAim extends SubsystemBase {
     SmartDashboard.putNumber("Rotation", thePigeon2.getAngle());
     // This method will be called once per scheduler run
   }
-  public void leftSpinSet(){
+  public void leftSpinSet(){// used in side auto aim
     desiredAngle = thePigeon2.getAngle()-90;
 
   }
-  public double error(){
+  public double error(){//used in side auto aim
     return Units.degreesToRadians(thePigeon2.getAngle() - desiredAngle);
   }
-  public void rightSpinSet(){
+  public void rightSpinSet(){//used in auto aim side
     desiredAngle = thePigeon2.getAngle()+90;
   }
   /*public double errorRight(){

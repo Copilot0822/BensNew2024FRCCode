@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
     rightSparkMax.setIdleMode(IdleMode.kBrake);
     leftSparkMax.setInverted(false);
     rightSparkMax.follow(leftSparkMax, true);
-    leftEncoder.setPositionConversionFactor(2.04081633);
+    leftEncoder.setPositionConversionFactor(2.04081633);//changes position to degrees of arm movement
     leftEncoder.setVelocityConversionFactor(2.04081633);
     
 
@@ -79,61 +79,64 @@ public class Arm extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-  public void addDegree(int size){
+  public void addDegree(int size){//adds degree by specified amount mostly used for auto aim calibration
     if(setPosition + size <= 83.75){
       setPosition += size;
     }
     //setPosition += size;
 
   }
-  public void removeDegree(int size){
+  public void removeDegree(int size){//removes degree by specified amount mostly used for auto aim calibration
     //setPosition -= size;
     if(setPosition - size >= 0){
       setPosition -= size;
     }
   }
-  public void setNewPosition(double position){
+  public void setNewPosition(double position){// sets the arm position from the bottom stop in degrees
     setPosition = position;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ArmPos", leftEncoder.getPosition());
-    SmartDashboard.putBoolean("UpStop", upStop.get());
-    SmartDashboard.putBoolean("downStop", downStop.get());
+    SmartDashboard.putBoolean("UpStop", !upStop.get());
+    SmartDashboard.putBoolean("downStop", !downStop.get());
     SmartDashboard.putNumber("ArmSet pos", setPosition);
     if(!upStop.get()){
       //leftEncoder.setPosition(83.75);
 
     }
-    else if(!downStop.get()){
+    else if(!downStop.get()){//if the arm is at the bottom stop then set arm pos to 0
       leftEncoder.setPosition(0);
     }
     //SmartDashboard.putNumber("Stickpos", m_newController.getRightY());
 
     //leftSparkMax.set(m_newController.getRightY()*-0.2);
-    SmartDashboard.putNumber("output", leftSparkMax.getAppliedOutput());
-    if(leftEncoder.getPosition() < setPosition){
+    SmartDashboard.putNumber("output", leftSparkMax.getAppliedOutput());//for setting the arm "PID" really just P; just to see the output to keep arm up
+    if(leftEncoder.getPosition() < setPosition){//if set pos is higher then current pos calculate the error and then solve for output using armslope from Constants
       error = setPosition - leftEncoder.getPosition();
-      output = error*Constants.armSlope;
-      if(output > 0.4){
-        leftSparkMax.set(0.4);
+      output = error*Constants.armSlope;//up calc
+      if(output > Constants.maxUpAppliedPower){//arm max up output
+        leftSparkMax.set(Constants.maxUpAppliedPower);
       }
-      else{
+      else{//else run it at slope
         leftSparkMax.set(output);
 
       }
 
     }
-    if(leftEncoder.getPosition() > setPosition){
+    if(leftEncoder.getPosition() > setPosition){//if set position is lower then the actual pos do negative PID
       error = setPosition - leftEncoder.getPosition();
-      output = error*0.03125;
-      if(output < -0.2){
-        leftSparkMax.set(-0.2);
+      output = error*Constants.downArmSlope;//get output
+      if(output < Constants.maxDownAppliedPower){// if output is above max then reduce
+        leftSparkMax.set(Constants.maxDownAppliedPower);
       }
-      else{
+      else{// else output
         leftSparkMax.set(output);
       }
+    }
+    else{//for when at zero then not commanding the motor at stop
+      leftSparkMax.set(0);
     }
 
     
@@ -143,13 +146,13 @@ public class Arm extends SubsystemBase {
     
     // This method will be called once per scheduler run
   }
-  public double getArmPos(){
+  public double getArmPos(){//gets the current arm pos
     return leftEncoder.getPosition();
   }
-  public double getArmVelocity(){
+  public double getArmVelocity(){//returns the arm speed
     return leftEncoder.getVelocity();
   }
-  public double getArmSetPos(){
+  public double getArmSetPos(){//gets the set pos
     return setPosition;
   }
 
