@@ -78,7 +78,7 @@ public class RobotContainer {
   // deprecated as of 4-20  //private final GenericHID drivController = new GenericHID(0); // BENS CONTROLLER
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * (0.1)*0.25).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * (0.125)*0.25).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();

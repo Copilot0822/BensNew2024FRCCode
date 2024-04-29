@@ -137,9 +137,17 @@ public class AutoAim extends Command {
     }*/
 
     if(mode == 2){
-      drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*3));
+      drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*2));
       if(m_photon.getX() != -1 || Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
-        mode = 1;
+        if(m_photon.getX() != -1){
+          mode = 1;
+          drivetrain.setControl(drive.withRotationalRate(0));
+        }
+        else{
+          drivetrain.setControl(drive.withRotationalRate(0.5));
+        }
+        //mode = 1;
+        //drivetrain.setControl(drive.withRotationalRate(0));
 
       }
 
@@ -147,9 +155,13 @@ public class AutoAim extends Command {
     else if(mode == 3){
       drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*3));
       if(m_photon.getX() != -1|| Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
-        
-        drivetrain.setControl(drive.withRotationalRate(0));
-        mode = 1;
+        if(m_photon.getX() != -1){
+          mode = 1;
+          drivetrain.setControl(drive.withRotationalRate(0));
+        }
+        else{
+          drivetrain.setControl(drive.withRotationalRate(-0.5));
+        }
       }
     }
     else if(mode == 1){
