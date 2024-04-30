@@ -4,36 +4,35 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.PigeonAutoAim;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class RemoveDegree extends Command {
+public class PigeonZeroAutoAim extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   //private final ExampleSubsystem m_subsystem;
-  private final Arm m_arm;
-  private boolean x = false;
+  private final PigeonAutoAim m_pigeon;
+  private boolean x;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RemoveDegree(Arm m_arm) {
+  public PigeonZeroAutoAim(PigeonAutoAim m_pigeon) {
     //m_subsystem = subsystem;
-    this.m_arm = m_arm;
+    this.m_pigeon = m_pigeon;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_arm);
-    
+    addRequirements(m_pigeon);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     x = false;
-    m_arm.removeDegree(1);
-    x=true;
+    m_pigeon.setZero();
+    x = true;
 
   }
 
@@ -48,7 +47,6 @@ public class RemoveDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return false;
-    return true;
+    return x;
   }
 }

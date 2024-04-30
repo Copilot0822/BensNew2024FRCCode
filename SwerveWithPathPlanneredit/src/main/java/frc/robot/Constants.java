@@ -38,7 +38,7 @@ public final class Constants {
   public static final int indexBackOutTime = 100;
 
   //Shoot Command vars
-  public static final double shooterSpeed = 0.5;
+  public static final double shooterSpeed = 1;
   public static final double shooterVariance = 50; //rpm variance
   public static final double indexerPush = 0.8;
   public static final int afterIndexPushDelay = 750;
@@ -47,6 +47,10 @@ public final class Constants {
 
   //arm vars
   public static final double armSlope = 0.063;
+  public static final double downArmSlope = 0.03125;
+  public static final double maxUpAppliedPower = 0.4;
+  public static final double maxDownAppliedPower = -0.2;
+  
 
   public static class OperatorConstants {
     //public static final int kDriverControllerPort = 0;

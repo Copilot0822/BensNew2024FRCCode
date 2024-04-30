@@ -19,17 +19,26 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.BackPhotonVision;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LeftLimelight;
+import frc.robot.subsystems.PigeonAutoAim;
+//import frc.robot.subsystems.LeftPhotonVision;
+import frc.robot.subsystems.RightLimelight;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.BackPhotonVision;
 //mine:
 import frc.robot.Constants;
 import frc.robot.commands.AddDegree;
 import frc.robot.commands.AmpShotArm;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeCmd;
+import frc.robot.commands.NewAutoAim;
 import frc.robot.commands.NoteRstCmd;
+import frc.robot.commands.PigeonZeroAutoAim;
 import frc.robot.commands.ReleaseCmd;
 import frc.robot.commands.ShootCmd;
 import frc.robot.commands.ShooterSpoolCmd;
@@ -46,6 +55,11 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
+  private final BackPhotonVision m_backPhotonVision = new BackPhotonVision();
+  //private final LeftPhotonVision m_leftPhotonVision = new LeftPhotonVision();
+  private final RightLimelight m_rLimelight = new RightLimelight();
+  private final LeftLimelight m_lLimelight = new LeftLimelight();
+  private final PigeonAutoAim m_PigeonAutoAim = new PigeonAutoAim();
   
 
 
@@ -55,7 +69,7 @@ public class RobotContainer {
 
 
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private double  MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
@@ -66,7 +80,7 @@ public class RobotContainer {
   // deprecated as of 4-20  //private final GenericHID drivController = new GenericHID(0); // BENS CONTROLLER
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * (0.125)*0.25).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -89,10 +103,12 @@ public class RobotContainer {
     joystick.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
     //joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
     //joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
-    joystick.pov(270).onTrue(new RemoveDegree(m_arm));
-    joystick.pov(90).onTrue(new AddDegree(m_arm));
+    //joystick.pov(180).onTrue(new RemoveDegree(m_arm));
+    //joystick.pov(0).onTrue(new AddDegree(m_arm));
     joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
+    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight, m_PigeonAutoAim));
+    joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision, m_PigeonAutoAim));
 
      
 
@@ -111,20 +127,22 @@ public class RobotContainer {
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
-    joystick.leftStick().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.leftStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.leftBumper().onTrue(new PigeonZeroAutoAim(m_PigeonAutoAim));
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
+ 
     //joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
     //joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
 
     /* Bindings for drivetrain characterization */
+    
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
     /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
     //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
