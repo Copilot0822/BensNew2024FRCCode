@@ -31,6 +31,7 @@ public class NewAutoAim extends Command {
   private final XboxController m_controller = new XboxController(0);
   private double  MaxAngularRate = 1.5 * Math.PI;
   private boolean g;
+  //private final ShootCmd mShootCmd;
 
 
   /**
@@ -42,6 +43,7 @@ public class NewAutoAim extends Command {
     //this.m_drivetrain = m_drivetrain;
     this.m_photon = m_photon;
     this.m_pigeonAutoAim = m_pigeonAutoAim;
+    //this.mShootCmd = mShootCmd;
 
     //m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -69,7 +71,7 @@ public class NewAutoAim extends Command {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
 
-    if(g = false){
+    if(g == false){//if this is the first occurence in execute then create a rotation2d then feed it into a pose 2d and then give it to seed field relative
       Rotation2d rotation2d = new Rotation2d( Units.degreesToRadians(m_pigeonAutoAim.getRotation()));
       Pose2d newPose = new Pose2d(null, rotation2d);
       m_drivetrain.seedFieldRelative(newPose);
@@ -80,19 +82,24 @@ public class NewAutoAim extends Command {
       
     double x = m_photon.getX();
     double y = m_photon.getY();
-    if(y != 0){
-      m_drivetrain.setControl(drive.withRotationalRate(y*8));
+    if(y != 0){//y only equals 0 when no target is found
+      m_drivetrain.setControl(drive.withRotationalRate(y*8));//drive when target found 
     } 
-    else if(m_controller.getRightX() > 0.1 || m_controller.getRightX() < -0.1){
+    else if(m_controller.getRightX() > 0.1 || m_controller.getRightX() < -0.1){ //for controlling rotation manually when no target found
       m_drivetrain.setControl(drive.withRotationalRate(-m_controller.getRightX() * MaxAngularRate));
       
     }
     else{
-      m_drivetrain.setControl(drive.withRotationalRate(0));
+      m_drivetrain.setControl(drive.withRotationalRate(0));//else have no rotation 
     }
+
+    //drive with x and y value from left stick
     m_drivetrain.setControl(drive.withVelocityX(m_controller.getLeftX() * MaxSpeed*0.25));
     m_drivetrain.setControl(drive.withVelocityY(-m_controller.getLeftY()* MaxSpeed*0.25));
     //m_controller.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    if(m_controller.getAButton() == true){
+
+    }
     
   }
 
