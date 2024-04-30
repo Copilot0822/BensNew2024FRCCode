@@ -36,6 +36,7 @@ import frc.robot.commands.AddDegree;
 import frc.robot.commands.AmpShotArm;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeCmd;
+import frc.robot.commands.NewAutoAim;
 import frc.robot.commands.NoteRstCmd;
 import frc.robot.commands.ReleaseCmd;
 import frc.robot.commands.ShootCmd;
@@ -106,6 +107,7 @@ public class RobotContainer {
     joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
     joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight, m_PigeonAutoAim));
+    joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision));
 
      
 
@@ -138,6 +140,7 @@ public class RobotContainer {
 
 
     /* Bindings for drivetrain characterization */
+    
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
     /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
     //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
