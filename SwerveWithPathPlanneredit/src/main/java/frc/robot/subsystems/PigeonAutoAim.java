@@ -18,17 +18,9 @@ public class PigeonAutoAim extends SubsystemBase {
   //private final TalonSRX intakeSrx = new TalonSRX(30);
   private final Pigeon2 thePigeon2 = new Pigeon2(60);
   private double desiredAngle;
-  
-  
-
-  
-
-
-  
-
-
-
-
+  private double drivingZero;
+  private double actualRotation;
+  private double offset = 0;
 
   public PigeonAutoAim() {}
 
@@ -59,6 +51,20 @@ public class PigeonAutoAim extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Rotation", thePigeon2.getAngle());
+
+    actualRotation = thePigeon2.getAngle() + offset;
+
+    if(actualRotation >= 360){
+      offset -= 360;
+
+    }
+    else if(actualRotation < 0){
+      offset += 360;
+    }
+    actualRotation = thePigeon2.getAngle() + offset;
+
+
+
     // This method will be called once per scheduler run
   }
   public void leftSpinSet(){// used in side auto aim
@@ -71,6 +77,39 @@ public class PigeonAutoAim extends SubsystemBase {
   public void rightSpinSet(){//used in auto aim side
     desiredAngle = thePigeon2.getAngle()+90;
   }
+  public void setZero(){
+    drivingZero = actualRotation;
+    
+
+  }
+  public double getRotation(){
+    if(drivingZero < actualRotation){
+      return drivingZero + (360 - actualRotation);
+    }
+    else if(drivingZero > actualRotation){
+      return drivingZero - actualRotation;
+    }
+    else{
+      return 0;
+    }
+  }
+
+
+
+
+
+
+
+  // public double getOffset(){
+  //   double negativeOffset;
+  //   double positiveOffset;
+
+  //   if(actualRotation > drivingZero){
+  //     negativeOffset = drivingZero - actualRotation;
+  //     positiveOffset = 360 - actualRotation + drivingZero;
+
+  //   }
+  // }
   /*public double errorRight(){
     return Units.degreesToRadians(thePigeon2.getAngle() - desiredAngle);
   }*/

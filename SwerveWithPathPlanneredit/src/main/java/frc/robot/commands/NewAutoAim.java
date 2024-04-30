@@ -8,12 +8,17 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.BackPhotonVision;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.PigeonAutoAim;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+//import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.util.Units;
 
 /** An example command that uses an example subsystem. */
 public class NewAutoAim extends Command {
@@ -22,8 +27,10 @@ public class NewAutoAim extends Command {
   private final CommandSwerveDrivetrain m_drivetrain = TunerConstants.DriveTrain;
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
   private final BackPhotonVision m_photon;
+  private final PigeonAutoAim m_pigeonAutoAim;
   private final XboxController m_controller = new XboxController(0);
   private double  MaxAngularRate = 1.5 * Math.PI;
+  private boolean g;
 
 
   /**
@@ -31,9 +38,10 @@ public class NewAutoAim extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public NewAutoAim(CommandSwerveDrivetrain m_drivetrain, BackPhotonVision m_photon) {
+  public NewAutoAim(CommandSwerveDrivetrain m_drivetrain, BackPhotonVision m_photon, PigeonAutoAim m_pigeonAutoAim) {
     //this.m_drivetrain = m_drivetrain;
     this.m_photon = m_photon;
+    this.m_pigeonAutoAim = m_pigeonAutoAim;
 
     //m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -48,6 +56,9 @@ public class NewAutoAim extends Command {
       .withDeadband(MaxSpeed * 0.1)//.withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
+
+    Rotation2d rotation2d = new Rotation2d( Units.degreesToRadians(m_pigeonAutoAim.getRotation()));
+    g = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,6 +67,14 @@ public class NewAutoAim extends Command {
     final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1*(0.25))//.withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+
+
+    if(g = false){
+      Rotation2d rotation2d = new Rotation2d( Units.degreesToRadians(m_pigeonAutoAim.getRotation()));
+      Pose2d newPose = new Pose2d(null, rotation2d);
+      m_drivetrain.seedFieldRelative(newPose);
+      g = true;
+    }
     
       // driving in open loop
       

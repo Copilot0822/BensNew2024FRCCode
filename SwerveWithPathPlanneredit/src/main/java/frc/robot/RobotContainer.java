@@ -38,6 +38,7 @@ import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeCmd;
 import frc.robot.commands.NewAutoAim;
 import frc.robot.commands.NoteRstCmd;
+import frc.robot.commands.PigeonZeroAutoAim;
 import frc.robot.commands.ReleaseCmd;
 import frc.robot.commands.ShootCmd;
 import frc.robot.commands.ShooterSpoolCmd;
@@ -107,7 +108,7 @@ public class RobotContainer {
     joystick.pov(0).onTrue(new AmpShotArm(m_arm));
     joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
     joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight, m_PigeonAutoAim));
-    joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision));
+    joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision, m_PigeonAutoAim));
 
      
 
@@ -132,9 +133,10 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.leftBumper().onTrue(new PigeonZeroAutoAim(m_PigeonAutoAim));
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
+ 
     //joystick.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
     //joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
