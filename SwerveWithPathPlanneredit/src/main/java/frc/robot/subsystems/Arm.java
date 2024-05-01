@@ -136,7 +136,7 @@ public class Arm extends SubsystemBase {
       }
     }
     else{//for when at zero then not commanding the motor at stop
-      leftSparkMax.set(0);
+      //leftSparkMax.set(0);
     }
 
     

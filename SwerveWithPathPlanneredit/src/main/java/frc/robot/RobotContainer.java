@@ -80,7 +80,7 @@ public class RobotContainer {
   // deprecated as of 4-20  //private final GenericHID drivController = new GenericHID(0); // BENS CONTROLLER
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * (0.125)*0.25).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * (0.125)*1).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -121,9 +121,9 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*0.25) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*1) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*0.25) // Drive left with negative X (left)
+            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*1) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
@@ -133,7 +133,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-    joystick.leftBumper().onTrue(new PigeonZeroAutoAim(m_PigeonAutoAim));
+    //joystick.leftBumper().onTrue(new PigeonZeroAutoAim(m_PigeonAutoAim));
 
     drivetrain.registerTelemetry(logger::telemeterize);
  
