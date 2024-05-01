@@ -32,7 +32,7 @@ public class AddDegree extends Command {
   @Override
   public void initialize() {
     x = false;
-    m_arm.addDegree(1);
+    m_arm.addDegree(5);
     x=true;
 
   }
