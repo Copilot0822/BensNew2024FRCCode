@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -29,8 +30,9 @@ public class AmpShotArm extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.setNewPosition(70);
+    m_arm.setNewPosition(Constants.ampArmPos); // sets the arm position
   }
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

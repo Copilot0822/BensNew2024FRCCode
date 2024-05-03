@@ -50,6 +50,15 @@ public final class Constants {
   public static final double downArmSlope = 0.03125;
   public static final double maxUpAppliedPower = 0.4;
   public static final double maxDownAppliedPower = -0.2;
+
+
+  //add degree vars
+  public static final int AddDegreeAmount = 5;
+  public static final int RemoveDegreeAmount = 1;
+
+
+  //amp shot vars
+  public static final double ampArmPos = 70;
   
 
   public static class OperatorConstants {

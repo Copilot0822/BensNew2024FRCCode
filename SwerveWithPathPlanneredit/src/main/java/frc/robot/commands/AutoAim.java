@@ -93,19 +93,19 @@ public class AutoAim extends Command {
     //else{
       e = false;
     //}
-    if(m_photon.getX() != -1){
+    if(m_photon.getX() != -1){//checks back camera for tag; -1 would mean that there is no tag present, sets to mode 1
       mode = 1;
     }
-    else if(m_leftLimelight.getLeftBool() && m_photon.getX() == -1){
+    else if(m_leftLimelight.getLeftBool() && m_photon.getX() == -1){//if left limelight sees the tag then know to turn, set mode 2
       mode = 2;
       m_pigeonAutoAim.leftSpinSet();
 
     }
-    else if(m_rightlimelight.getRightBool() && m_photon.getX() == -1){
+    else if(m_rightlimelight.getRightBool() && m_photon.getX() == -1){// if right know to turn set mode 3
       mode = 3;
       m_pigeonAutoAim.rightSpinSet();
     }
-    else{
+    else{//if none seen then return true for is finished
       e = true;
     }
     final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
@@ -119,12 +119,12 @@ public class AutoAim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
+    final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()//opens/starts the phoenix 6 drive
       //.withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
-    double x = m_photon.getX();
-    double y = m_photon.getY();
+    double x = m_photon.getX();//gets the distance from camera back
+    double y = m_photon.getY();//gets the horizontal distance
     //final SwerveRequest.RobotCentric drive = new SwerveRequest().
     /*if(y*2 > 2){
       drivetrain.setControl(drive.withRotationalRate(2));
@@ -136,7 +136,7 @@ public class AutoAim extends Command {
       drivetrain.setControl(drive.withRotationalRate(y*2));
     }*/
 
-    if(mode == 2){
+    if(mode == 2){//if mode 2 turn 
       drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*2));
       if(m_photon.getX() != -1 || Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
         if(m_photon.getX() != -1){
@@ -152,7 +152,7 @@ public class AutoAim extends Command {
       }
 
     }
-    else if(mode == 3){
+    else if(mode == 3){//if mode 3 turn opposite
       drivetrain.setControl(drive.withRotationalRate(m_pigeonAutoAim.error()*3));
       if(m_photon.getX() != -1|| Units.radiansToDegrees(m_pigeonAutoAim.error()) < 5 && Units.radiansToDegrees(m_pigeonAutoAim.error()) > -5){
         if(m_photon.getX() != -1){
@@ -164,7 +164,7 @@ public class AutoAim extends Command {
         }
       }
     }
-    else if(mode == 1){
+    else if(mode == 1){//if mode 1 auto aim
       drivetrain.setControl(drive.withRotationalRate(y*3));
       if(f = false){
         
@@ -220,7 +220,7 @@ public class AutoAim extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) {//end just shuts the motors off and puts the arm down
     m_arm.setNewPosition(0);
     m_indexer.setIndexer(0);
     m_shooter.runShooter(0);

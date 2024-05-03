@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,9 +31,9 @@ public class AddDegree extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() {// adds specified number of degrees using the custom arm P
     x = false;
-    m_arm.addDegree(5);
+    m_arm.addDegree(Constants.AddDegreeAmount); // how it commands
     x=true;
 
   }
