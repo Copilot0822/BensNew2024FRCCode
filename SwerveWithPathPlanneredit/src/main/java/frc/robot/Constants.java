@@ -52,6 +52,17 @@ public final class Constants {
   public static final double maxDownAppliedPower = -0.2;
 
 
+
+
+
+  // joystick curve
+  public static final double joystickSlope = 0.5;
+  public static final double speedMultiplier = 1;
+  public static final double deadzoneLeft = 0.125;
+  public static final double deadzoneDrive = joystickSlope*(deadzoneLeft - 1)*deadzoneLeft*(deadzoneLeft + 1) + deadzoneLeft;
+  
+
+
   //add degree vars
   public static final int AddDegreeAmount = 5;
   public static final int RemoveDegreeAmount = 1;

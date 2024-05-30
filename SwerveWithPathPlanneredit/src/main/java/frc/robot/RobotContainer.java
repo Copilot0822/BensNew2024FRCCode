@@ -24,6 +24,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.JoystickCurve;
 import frc.robot.subsystems.LeftLimelight;
 import frc.robot.subsystems.PigeonAutoAim;
 //import frc.robot.subsystems.LeftPhotonVision;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final RightLimelight m_rLimelight = new RightLimelight();
   private final LeftLimelight m_lLimelight = new LeftLimelight();
   private final PigeonAutoAim m_PigeonAutoAim = new PigeonAutoAim();
+  private final JoystickCurve m_JoystickCurve = new JoystickCurve();
   
 
 
@@ -80,7 +82,7 @@ public class RobotContainer {
   // deprecated as of 4-20  //private final GenericHID drivController = new GenericHID(0); // BENS CONTROLLER
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * (0.125)*1).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * (Constants.deadzoneDrive)*Constants.speedMultiplier).withRotationalDeadband(MaxAngularRate * (0.1)*1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -121,9 +123,9 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX((-joystick.getLeftY() * MaxSpeed)*1) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-m_JoystickCurve.GetLeftX() * MaxSpeed)*Constants.speedMultiplier) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY((-joystick.getLeftX() * MaxSpeed)*1) // Drive left with negative X (left)
+            .withVelocityY((-m_JoystickCurve.GetLeftY() * MaxSpeed)*Constants.speedMultiplier) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
