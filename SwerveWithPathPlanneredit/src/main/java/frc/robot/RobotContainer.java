@@ -50,6 +50,9 @@ import frc.robot.commands.RemoveDegree;
 
 
 public class RobotContainer {
+
+
+
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Indexer m_indexer = new Indexer();
@@ -123,9 +126,9 @@ public class RobotContainer {
     
     //swervestuff
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX((-m_JoystickCurve.GetLeftX() * MaxSpeed)*Constants.speedMultiplier) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-m_JoystickCurve.GetLeftY() * MaxSpeed)*Constants.speedMultiplier) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY((-m_JoystickCurve.GetLeftY() * MaxSpeed)*Constants.speedMultiplier) // Drive left with negative X (left)
+            .withVelocityY((-m_JoystickCurve.GetLeftX() * MaxSpeed)*Constants.speedMultiplier) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ).ignoringDisable(true));
 
@@ -161,11 +164,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    /* First put the drivetrain into auto run mode, then run the auto */
+    /* First put the drivetrai
+    n into auto run mode, then run the auto */
     //return runAuto;
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
 
     
-    return new PathPlannerAuto("Auto Center");
+    return new PathPlannerAuto("New Auto");
   }
 }
