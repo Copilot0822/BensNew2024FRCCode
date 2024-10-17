@@ -21,6 +21,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BackPhotonVision;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final BackPhotonVision m_backPhotonVision = new BackPhotonVision();
+  private final Elevator mElevator = new Elevator();
   //private final LeftPhotonVision m_leftPhotonVision = new LeftPhotonVision();
   private final RightLimelight m_rLimelight = new RightLimelight();
   private final LeftLimelight m_lLimelight = new LeftLimelight();
@@ -78,6 +80,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandXboxController joystick2 = new CommandXboxController(1);
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
 
@@ -103,17 +106,17 @@ public class RobotContainer {
     new JoystickButton(drivController, 2).onTrue(new NoteRstCmd(m_indexer, m_intake));*/
 
     //Ben's Commands
-    joystick.rightBumper().toggleOnTrue(new IntakeCmd(m_intake, m_indexer, m_shooter)); //on right bumper button run intake
-    joystick.x().toggleOnTrue(new ShootCmd(m_shooter, m_indexer, m_arm)); //on right trigger button shoot auto
-    joystick.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
+    joystick.x().toggleOnTrue(new IntakeCmd(m_intake, m_indexer, m_shooter)); //on right bumper button run intake
+    joystick.rightBumper().toggleOnTrue(new ShootCmd(m_shooter, m_indexer, m_arm)); //on right trigger button shoot auto
+    joystick2.y().onTrue(new NoteRstCmd(m_indexer, m_intake)); // on y button back out indexer manual **do not need this normally
     //joystick.leftTrigger().toggleOnTrue(new ShooterSpoolCmd(m_shooter));
     //joystick.rightTrigger(0.75).toggleOnTrue(new ReleaseCmd(m_indexer));
     //joystick.pov(180).onTrue(new RemoveDegree(m_arm));
     //joystick.pov(0).onTrue(new AddDegree(m_arm));
-    joystick.pov(0).onTrue(new AmpShotArm(m_arm));
-    joystick.pov(180).onTrue(new ZeroArmPos(m_arm));
-    joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight, m_PigeonAutoAim));
-    joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision, m_PigeonAutoAim));
+    joystick2.pov(0).onTrue(new AmpShotArm(m_arm));
+    joystick2.pov(180).onTrue(new ZeroArmPos(m_arm));
+    //joystick.pov(90).toggleOnTrue(new AutoAim(m_arm, m_backPhotonVision, drivetrain, m_shooter, m_indexer, m_lLimelight, m_rLimelight, m_PigeonAutoAim));
+    //joystick.pov(270).toggleOnTrue(new NewAutoAim(drivetrain, m_backPhotonVision, m_PigeonAutoAim));
 
      
 
@@ -133,11 +136,11 @@ public class RobotContainer {
         ).ignoringDisable(true));
 
     joystick.leftStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    /*joystick.b().whileTrue(drivetrain
+        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));*/
 
     // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
     //joystick.leftBumper().onTrue(new PigeonZeroAutoAim(m_PigeonAutoAim));
 
     drivetrain.registerTelemetry(logger::telemeterize);

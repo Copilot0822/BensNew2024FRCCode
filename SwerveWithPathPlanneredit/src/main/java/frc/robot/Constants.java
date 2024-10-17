@@ -38,6 +38,8 @@ public final class Constants {
   public static final int topShooterId = 42;
   public static final int leftArmId = 43;
   public static final int rightArmId = 44;
+  public static final int m_elevatorTalon = 45;
+  public static final int m_elevatorVictor = 46;
 
    //Motor Inverts
   public static final boolean intakeInvert = true;
@@ -87,6 +89,9 @@ public final class Constants {
 
   //amp shot vars
   public static final double ampArmPos = 70;
+
+  //Elevator vars
+  
   
 
   public static class OperatorConstants {
