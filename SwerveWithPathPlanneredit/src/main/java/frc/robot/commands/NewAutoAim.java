@@ -87,7 +87,7 @@ public class NewAutoAim extends Command {
       m_drivetrain.seedFieldRelative();
     }
     if(y != 0){//y only equals 0 when no target is found
-      m_drivetrain.setControl(drive.withRotationalRate(y*9));//drive when target found 
+      m_drivetrain.setControl(drive.withRotationalRate(y*9/x));//drive when target found 
     } 
     else if(m_controller.getRightX() > 0.1 || m_controller.getRightX() < -0.1){ //for controlling rotation manually when no target found
       m_drivetrain.setControl(drive.withRotationalRate(-m_controller.getRightX() * MaxAngularRate));

@@ -57,9 +57,9 @@ public final class Constants {
   //Shoot Command vars
   public static final double shooterSpeed = 1;
   public static final double shooterVariance = 50; //rpm variance
-  public static final double indexerPush = 0.8;
-  public static final int afterIndexPushDelay = 750;
-  public static final int shooterRPMLim = 5000;
+  public static final double indexerPush = 1;
+  public static final int afterIndexPushDelay = 1500;
+  public static final int shooterRPMLim = 5100;
 
 
   //arm vars
@@ -74,7 +74,7 @@ public final class Constants {
 
   // joystick curve
   public static final double joystickSlope = 0.5;
-  public static final double speedMultiplier = 1;
+  public static final double speedMultiplier = 0.25;
   public static final double deadzoneLeft = 0.125;
   public static final double deadzoneDrive = joystickSlope*(deadzoneLeft - 1)*deadzoneLeft*(deadzoneLeft + 1) + deadzoneLeft;
   
